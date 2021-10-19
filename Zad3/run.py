@@ -27,10 +27,10 @@ if __name__ == "__main__":
     TRAINING_LABELS = read_from_idx_files(data_file_names["train_labels"])
     vector_shape = TRAINING_DATA.shape
     starting_neurons = vector_shape[1] * vector_shape[2]
-    LAYERS = 3
-
+    LAYERS = 4
+    LABELS = 10
     bias = []
     learning_factors = []
-    mlp = MLP(starting_neurons=starting_neurons, training_data_size=vector_shape[1]*vector_shape[2], layers=LAYERS, labels=10,
+    mlp = MLP(starting_neurons=starting_neurons, layers=LAYERS, labels=LABELS,
               bias=bias, learning_factor=learning_factors)
     mlp.train(TRAINING_DATA, TRAINING_LABELS)
