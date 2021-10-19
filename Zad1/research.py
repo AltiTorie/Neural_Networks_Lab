@@ -24,9 +24,8 @@ def task_1():
     TEST_POINTS = [[0, 0], [0, 1], [1, 0], [1, 1], [
         0.0111, -0.0111], [1.001, 0.0111], [-0.0111, 0.9789], [0.987, 1.0123]]
     TEST_EXPECTED = [0, 0, 0, 1, 0, 0, 0, 1]
-    log.info(
-        f"_____________________ {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')} _____________________")
-    log.info(f"Starting data:")
+
+    log.info(f"Testing different static thresholds - starting data:")
     log.info(f"alpha: {alpha}")
     log.info(f"weights: {weights}")
     log.info(f"thresholds: {thresholds}")
@@ -47,21 +46,25 @@ def task_1():
 
 def task_2():
     # dynamic bias, different starting weights
-    # TESTING: Starting weghts range ex. (-1, 1), (-0.2, 0.2)
+    # TESTING: Starting weights range ex. (-1, 1), (-0.2, 0.2)
     print("Task 2 running")
-    WEIGHTS_RANGES = [[-1, 1], [-0.8, 0.8], [-0.5, 0.5], [-0.25,
-                                                          0.25], [-0.1, 0.1], [-0.01, 0.01], [-0.000001, 0.000001]]
-    weights = [[random.uniform(wr[0], wr[1]), random.uniform(
-        wr[0], wr[1])] for wr in WEIGHTS_RANGES]
+    WEIGHTS_RANGES = [[[-1, -0.8], [0.8, 1]],
+                      [[-0.8, -0.5], [0.5, 0.8]],
+                      [[-0.5, -0.25], [0.25, 0.5]],
+                      [[-0.25, -0.1], [0.1, 0.25]],
+                      [[-0.1, -0.01], [0.01, 0.1]],
+                      [[-0.01, 0.000001], [0.000001, 0.01]],
+                      [[-0.000001, -0.0000001], [0.0000001, 0.000001]]]
+    weights = [[random.choice([random.uniform(wr[0][0], wr[0][1]), random.uniform(wr[1][0], wr[1][1])]),
+                random.choice([random.uniform(wr[0][0], wr[0][1]), random.uniform(wr[1][0], wr[1][1])])]
+               for wr in WEIGHTS_RANGES]
     alpha = 0.05
     bias = 0.01
     LEARNING_DATA, EXPECTED = utils.generate_random_points(10)
     TEST_POINTS = [[0, 0], [0, 1], [1, 0], [1, 1], [
         0.0111, -0.0111], [1.001, 0.0111], [-0.0111, 0.9789], [0.987, 1.0123]]
     TEST_EXPECTED = [0, 0, 0, 1, 0, 0, 0, 1]
-    log.info(
-        f"_____________________ {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')} _____________________")
-    log.info(f"Starting data:")
+    log.info(f"Testing weights ranges - starting data:")
     log.info(f"alpha: {alpha}")
     log.info(f"weights: {weights}")
     log.info(f"bias: {bias}")
@@ -85,15 +88,13 @@ def task_3():
     print("Task 3 running")
     weights = [round(random.uniform(-0.01, 0.01), 3),
                round(random.uniform(-0.01, 0.01), 3)]
-    alphas = [0.001, 0.01, 0.05, 0.1, 0.5, 0.9]
+    alphas = [0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 1]
     bias = 0.01
     LEARNING_DATA, EXPECTED = utils.generate_random_points(10)
     TEST_POINTS = [[0, 0], [0, 1], [1, 0], [1, 1], [
         0.0111, -0.0111], [1.001, 0.0111], [-0.0111, 0.9789], [0.987, 1.0123]]
     TEST_EXPECTED = [0, 0, 0, 1, 0, 0, 0, 1]
-    log.info(
-        f"_____________________ {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')} _____________________")
-    log.info(f"Starting data:")
+    log.info(f"Testing learning factor alpha - starting data:")
     log.info(f"alphas: {alphas}")
     log.info(f"weights: {weights}")
     log.info(f"bias: {bias}")
@@ -117,34 +118,31 @@ def task_4():
     print("Task 4 running")
     weights = [round(random.uniform(-0.01, 0.01), 3),
                round(random.uniform(-0.01, 0.01), 3)]
-    alpha = 0.01
+    alpha = 0.0001
     bias = 0.0001
     LEARNING_DATA, EXPECTED = utils.generate_random_points(1)
     TEST_POINTS = [[0, 0], [0, 1], [1, 0], [1, 1], [
         0.0111, -0.0111], [1.001, 0.0111], [-0.0111, 0.9789], [0.987, 1.0123]]
     TEST_EXPECTED = [0, 0, 0, 1, 0, 0, 0, 1]
-    log.info(
-        f"_____________________ {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')} _____________________")
-    log.info(f"Starting data:")
+    log.info(f"Testing difference between unipolar and bipolar - starting data:")
     log.info(f"alphas: {alpha}")
     log.info(f"weights: {weights}")
     log.info(f"bias: {bias}")
     log.info(f"__________________________")
 
     p = Perceptron(alpha=alpha, weights=copy.copy(
-        weights), bias=bias, dynamic_bias=False)
+        weights), bias=bias, dynamic_bias=True)
     log.info(f"Training perceptron: {p.__class__.__name__}")
     train_perceptron(p, LEARNING_DATA, EXPECTED)
     counter = 0
     for test, expected in zip(TEST_POINTS, TEST_EXPECTED):
         pred = p.predict(test)
         counter += pred == expected
-    log.info(
-        f"Output perceptron {p.__class__.__name__} - accuracy: {counter}/{len(TEST_POINTS)}")
+    log.info(f"Output perceptron {p.__class__.__name__} - accuracy: {counter}/{len(TEST_POINTS)}")
     log.info("_______________________________")
 
     p = BiPolarPerceptron(alpha=alpha, weights=copy.copy(
-        weights), bias=bias, dynamic_bias=False)
+        weights), bias=bias, dynamic_bias=True)
     log.info(f"Training perceptron: {p.__class__.__name__}")
     EXPECTED_BIPOLAR = [-1 if e == 0 else 1 for e in EXPECTED]
     TEST_EXPECTED_BIPOLAR = [-1 if e == 0 else 1 for e in TEST_EXPECTED]
@@ -159,6 +157,7 @@ def task_4():
 
 
 if __name__ == "__main__":
+    log.info(f"_____________________ {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')} _____________________")
     # task_1()
     # task_2()
     # task_3()

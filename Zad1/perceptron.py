@@ -1,5 +1,7 @@
 from logger import Logger as log
 import numpy as np
+import time
+from datetime import timedelta
 
 
 class Perceptron:
@@ -30,6 +32,7 @@ class Perceptron:
 
     def train(self, train_data, train_output):
         no_errors = False
+        started = time.time()
         while not no_errors:
             no_errors = True
             self.iteration_counter += 1
@@ -43,10 +46,17 @@ class Perceptron:
                 if perceptron_error != 0:
                     no_errors = False
                     num_of_errors += 1
-        log.info(
-            f"Training finished in {self.iteration_counter} iterations")
-        log.info(f"Bias: {self.weights[0]}")
-        log.info(f"Weights: {self.weights[1:]}")
+            if timedelta(seconds=(time.time() - started)) > timedelta(seconds=60):
+                break
+        if no_errors:
+            log.info(
+                f"Training finished in {self.iteration_counter} iterations")
+            log.info(f"Bias: {self.weights[0]}")
+            log.info(f"Weights: {self.weights[1:]}")
+        else:
+            log.info(f"Training broken after {self.iteration_counter} iterations because of taking too long")
+            log.info(f"Bias: {self.weights[0]}")
+            log.info(f"Weights: {self.weights[1:]}")
 
     def predict(self, input_vector):
         z = self._activation_func(input_vector)

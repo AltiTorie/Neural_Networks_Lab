@@ -1,5 +1,5 @@
 import random
-from Utilities.logger import Logger as log
+from logger import Logger as log
 import numpy as np
 from perceptron import Perceptron
 import utils

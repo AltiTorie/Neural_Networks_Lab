@@ -1,5 +1,7 @@
-from Utilities.logger import Logger as log
+from logger import Logger as log
 from copy import copy
+import time
+from datetime import timedelta
 
 
 class Adaline:
@@ -13,6 +15,7 @@ class Adaline:
     def train(self, train_data, train_output):
         epsilon = self.accepted_epsilon + 0.1
         L = len(train_data)
+        started = time.time()
         while epsilon > self.accepted_epsilon:
             self.iteration_counter += 1
             epsilons = []
@@ -25,8 +28,12 @@ class Adaline:
                 epsilons.append(delta**2)
                 self._update_weights(delta=delta, x=xi)
             epsilon = (1 / L) * sum(epsilons)
-            print(epsilon)
-        log.info(f"Training finished in {self.iteration_counter} iterations")
+            if timedelta(seconds=(time.time() - started)) > timedelta(seconds=60):
+                break
+        if epsilon > self.accepted_epsilon:
+            log.info(f"Training broken after {self.iteration_counter} iterations. Took >60s")
+        else:
+            log.info(f"Training finished in {self.iteration_counter} iterations")
         log.info(f"Reached epsilon: {epsilon}")
         log.info(f"Bias: {self.weights[0]}")
         log.info(f"Weights: {self.weights[1:]}")
