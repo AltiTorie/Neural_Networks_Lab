@@ -12,7 +12,7 @@ class MLP:
         self.neurons.append(labels)
         weights = []
         for l in range(layers + 1):
-            weights.append(np.random.normal(self.neurons[l]+1, self.neurons[l+1]))
+            weights.append(np.random.normal(0, 0.5, (self.neurons[l]+1, self.neurons[l+1])))
         self.layers = layers + 1
         self.bias = bias
         self.labels = labels
