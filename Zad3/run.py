@@ -15,6 +15,11 @@ def read_from_idx_files(file_name):
     return arr
 
 
+def draw_img(img):
+    plt.imshow(img, cmap=plt.get_cmap('gray'))
+    plt.show()
+
+
 data_file_names = {
     "train_data": "data/train-images.idx3-ubyte",
     "train_labels": "data/train-labels.idx1-ubyte",
@@ -26,6 +31,7 @@ if __name__ == "__main__":
     TRAINING_DATA = read_from_idx_files(data_file_names["train_data"])
     TRAINING_LABELS = read_from_idx_files(data_file_names["train_labels"])
     vector_shape = TRAINING_DATA.shape
+    # draw_img(TRAINING_DATA[1000])
     starting_neurons = vector_shape[1] * vector_shape[2]
     LAYERS = 4
     LABELS = 10
@@ -33,4 +39,6 @@ if __name__ == "__main__":
     learning_factors = []
     mlp = MLP(starting_neurons=starting_neurons, layers=LAYERS, labels=LABELS,
               bias=bias, learning_factor=learning_factors)
-    mlp.train(TRAINING_DATA, TRAINING_LABELS)
+    mlp.train(TRAINING_DATA[:10], TRAINING_LABELS[:10])
+    print(mlp.predict(TRAINING_DATA[1000]))
+    print(TRAINING_LABELS[1000])
